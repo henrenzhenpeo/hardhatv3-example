@@ -45,7 +45,9 @@ contract Ecommerce {
 
         product.buyer = msg.sender;
         product.status = ProductStatus.Sold;
-        product.seller.transfer(msg.value); // 支付给卖家
+//        product.seller.transfer(msg.value); // 支付给卖家
+        (bool success, ) = product.seller.call{value: msg.value}("");
+        require(success, "Transfer to seller failed"); // 如果转账失败直接回滚
 
         emit ProductPurchased(_id, msg.sender);
     }
